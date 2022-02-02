@@ -7,30 +7,31 @@ def game_state(gameid):
     game = db[gameid]
 
     # this section is for player related information
-    spieler_count = len(game["spieler"])
+    players = game["spieler"]
+
     # whos turn it is (kommt_raus)
-    player_rauskommen_index = len(game["runden"]) % spieler_count
-    rauskommen_map = [False] * spieler_count
-    rauskommen_map[player_rauskommen_index] = True
+    spieler_rauskommen = players[ len(game["runden"]) % len(players) ]
+    for player in players:
+        player["kommt_raus"] = (player["id"] == spieler_rauskommen["id"])
+
+    spieler_aussetzen = players[ (len(game["runden"]) - 1) % len(players) ]
     # who is ignored this round (aussetzen) [only needed for > 4 players]
-    aussetzen_map = [False] * spieler_count
-    if spieler_count == 5:
-        # player before rauskommen setzt aus
-        aussetzen_map[(player_rauskommen_index + 4) % 5] = True
-    # putting everything together
-    for index in range(spieler_count):
-        game["spieler"][index]["kommt_raus"] = rauskommen_map[index]
-        game["spieler"][index]["aussetzen"] = aussetzen_map[index]
+    for player in players:
+        player["aussetzen"] = ( len(players) != 4 ) and ( player["id"] == spieler_aussetzen["id"] )
+
 
     # this section is for "zwischenergebnisse"
     # each round, every played round needs to be summed up to per player
+    points = {player["id"]:0 for player in players}
 
-    zwischenstand_map = [0] * spieler_count
-    for round_index in range(len(game["runden"])):
-        for spieler_index in range(spieler_count):
-            spieler = game["runden"][round_index]["spielerArray"][spieler_index]
-            zwischenstand_map[spieler_index] += spieler["punkte"]
-            spieler["zwischenstand"] = zwischenstand_map[spieler_index]
-
-    print(game)
+    for round in game["runden"]:
+        print("Round: ", round)
+        for player in players:
+            for player_ in round["spielerArray"]:
+                if player["id"] == player_["id"]:
+                    print("Player: ", player, player_)
+                    points[player["id"]] += player_["punkte"]
+                    player_["zwischenstand"] = points[player["id"]]  
+    
+    print("Game: ", game)
     return game
