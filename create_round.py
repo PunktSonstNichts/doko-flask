@@ -11,7 +11,6 @@ def create(playerArray):
     now = datetime.now()
     dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
     data = {'_id': uuid.uuid4().__str__(), 'timestamp': dt_string, 'spieler': []}
-    print(playerArray)
     for player in playerArray:
         if playerArray[player] is not None:
             data['spieler'].append({
