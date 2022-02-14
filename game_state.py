@@ -30,4 +30,4 @@ def game_state(game_id):
             player["zwischenstand"] = stats[player["id"]]["points"]
     
     print("Game: ", game)
-    return game
+    return game.db
