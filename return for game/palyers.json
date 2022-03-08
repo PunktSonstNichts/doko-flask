@@ -1,0 +1,42 @@
+{
+    "player1": {
+        "_id": "6c21b52eb9529adf9462a8841b00a4eb",
+        "_rev": "1-a7b2f40ad075810dfdea0117980359a2",
+        "added_from": "adam",
+        "created": "02/28/2022, 17:03:38",
+        "id": "2120c352-abc7-49ba-821c-cd93d80c7279",
+        "username": "Till"
+    },
+    "player2": {
+        "_id": "0e7e6696d9459f1a3570f38e1f007258",
+        "_rev": "1-316e182c0a827b4153e4d1a5dab05367",
+        "added_from": "adam",
+        "created": "03/06/2022, 13:20:36",
+        "id": "ed4af836-a9ba-4b8a-8732-3e2da4adf794",
+        "username": "Malte2"
+    },
+    "player3": {
+        "_id": "6c21b52eb9529adf9462a8841b00aa60",
+        "_rev": "1-372b59cf5d8be2bd1336b34703a9a2af",
+        "added_from": "adam",
+        "created": "02/28/2022, 17:05:07",
+        "id": "7c187819-6c9a-40eb-80db-b74bff1fb514",
+        "username": "Malte"
+    },
+    "player4": {
+        "_id": "0e7e6696d9459f1a3570f38e1f009356",
+        "_rev": "1-ca9028b008fef662f2b03d7b20d7f4c5",
+        "added_from": "adam",
+        "created": "03/08/2022, 13:36:23",
+        "id": "c39870da-d0ce-4d91-b48a-9ff9d3220bb4",
+        "username": "qwert"
+    },
+    "player5": {
+        "_id": "0e7e6696d9459f1a3570f38e1f00a227",
+        "_rev": "1-de3808943166e97efa411bb210e1e92f",
+        "added_from": "adam",
+        "created": "03/08/2022, 13:36:27",
+        "id": "91a33e97-d235-4238-9353-d337e70babbd",
+        "username": "123321"
+    }
+}
