@@ -23,8 +23,9 @@ def login():
 
 @app.route('/new', methods=["POST"])
 @jwt_required()
-def create_game():
+def create_games():
     players = request.json
+    create_game.create(players)
     return jsonify(create_game.create(players))
 
 
@@ -42,7 +43,14 @@ def game(gameId):
 @app.route('/namelist/<name>', methods=["GET"])
 @jwt_required()
 def name_list(name):
-    return ({"results": player.check_name(name)})
+    return ({"player": player.check_name(name)})
+
+@app.route('/new_player', methods=["POST"])
+@jwt_required()
+def new_player():
+    username = request.json.get("username", None)
+    added_from = get_jwt_identity()
+    return player.add_new_player(added_from, username)
 
 
 @app.route("/")

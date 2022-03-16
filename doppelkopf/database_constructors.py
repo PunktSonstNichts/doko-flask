@@ -4,13 +4,13 @@ from sqlalchemy import ForeignKey
 from doppelkopf import db
 
 
-
 class User(db.Model):
     user_id = db.Column("user_id", db.Integer, primary_key=True)
     username = db.Column("username", db.String(100), nullable=False)
     password = db.Column("password", db.String(100), nullable=True)
     email = db.Column("email", db.String(100), nullable=True)
-    added_from= db.Column("added_from", db.Integer, nullable=True)
+    added_from = db.Column("added_from", db.Integer, nullable=True)
+
     def __repr__(self):
         return '<User %r>' % self.username
 
@@ -48,8 +48,7 @@ class RoundsXPlayer(db.Model):
     user_id = db.Column("user_id", db.Integer, ForeignKey("user.user_id"))
     punkte = db.Column("punkte", db.Integer)
     partei = db.Column("partei", db.String)
-    hochzeit = db.Column("hochzeit", db.String)
-    schweine = db.Column("schweine", db.String)
-    armut = db.Column("armut", db.Integer)
-    solotyp = db.Column("solotyp", db.String)
-
+    hochzeit = db.Column("hochzeit", db.String, nullable=True)
+    schweine = db.Column("schweine", db.String, nullable=True)
+    armut = db.Column("armut", db.Integer, nullable=True)
+    solotyp = db.Column("solotyp", db.String, nullable=True)

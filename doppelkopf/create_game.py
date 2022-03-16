@@ -10,10 +10,10 @@ def create(playerArray):
     now = datetime.now()
     dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
 
-    player1_id = playerArray[0]
-    player2_id = playerArray[1]
-    player3_id = playerArray[2]
-    player4_id = playerArray[3]
+    player1_id = playerArray["player1"]["user_id"]
+    player2_id = playerArray["player2"]["user_id"]
+    player3_id = playerArray["player3"]["user_id"]
+    player4_id = playerArray["player4"]["user_id"]
 
 
     game = Game(timestamp=dt_string, player1_id=player1_id,
@@ -21,5 +21,5 @@ def create(playerArray):
     db.session.add(game)
     db.session.commit()
     
-    
-    return game.game_id
+   
+    return {"_id":game.game_id}

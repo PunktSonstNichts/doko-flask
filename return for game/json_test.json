@@ -1,0 +1,19 @@
+{
+    "player1": {
+        "user_id": 1,
+        "username": "malte"
+    },
+    "player2": {
+        "user_id": 2,
+        "username": "till"
+    },
+    "player3": {
+        "user_id": 3,
+        "username": "alex"
+    },
+    "player4": {
+        "user_id": 4,
+        "username": "robin"
+    },
+    "player5": null
+}

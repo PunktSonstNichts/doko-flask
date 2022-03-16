@@ -1,33 +1,64 @@
-from game import Game
+from doppelkopf.database_constructors import Game, Rounds, RoundsXPlayer, User
+import json
+
 
 def game_state(game_id):
-    game = Game(game_id)
-    
+    game = Game.query.filter_by(game_id=game_id).first()
+
+    gamestate = {
+        "_id": game_id,
+        "runden": [],
+        "spieler": [],
+        "timestamp": game.timestamp}
+
     # this section is for player related information
-    players = game["spieler"]
+    players = [game.player1_id, game.player2_id,
+               game.player3_id, game.player4_id]
+    aus = False
+    if game.player5_id != None:
+        players.append(game.player5_id)
+        aus = len((Rounds.query.filter_by(
+            game_id=game_id).all())-1) % len(players)
 
-    # whos turn it is (kommt_raus)
-    spieler_rauskommen = players[ len(game["runden"]) % len(players) ]
-    for player in players:
-        player["kommt_raus"] = (player["id"] == spieler_rauskommen["id"])
+    raus = len(Rounds.query.filter_by(game_id=game_id).all()) % len(players)
 
-    # who is ignored this round (aussetzen) [only needed for > 4 players]
-    spieler_aussetzen = players[ (len(game["runden"]) - 1) % len(players) ]
-    for player in players:
-        player["aussetzen"] = ( len(players) != 4 ) and ( player["id"] == spieler_aussetzen["id"] )
+    for i, player in enumerate(players):
+        pl = User.query.filter_by(user_id=player).first()
+        name = pl.username
 
-    # this section is for "zwischenergebnisse"
-    # each round, every played round needs to be summed up to per player
-    stats = { player["id"]: {   "points":0,
-                                "solo":0,
-                                "armut":0,
-                                "schweine":0
-            } for player in players }
-    
-    for round in game["runden"]:
-        for player in round["spielerArray"]:
-            stats[player["id"]]["points"] += player["punkte"]
-            player["zwischenstand"] = stats[player["id"]]["points"]
-    
-    print("Game: ", game)
-    return game.db
+        if i == raus:
+            outi = True
+        else:
+            outi = False
+        spielerer = {
+            "aussetzen": aus,
+            "id": player,
+            "kommt_raus": outi,
+            "name": name
+        }
+
+        gamestate["spieler"].append(spielerer)
+    zs = [0, 0, 0, 0]
+    for round in Rounds.query.filter_by(game_id=game_id).all():
+
+        roundstate = {
+            "punkte": 0,
+            "solo": None,
+            "spielerArray": []
+        }
+
+        for i, data in enumerate(RoundsXPlayer.query.filter_by(round_id=round.round_id).all()):
+            zs[i] += data.punkte
+            player_state = {
+                "id": data.user_id,
+                "partei": data.partei,
+                "punkte": data.punkte,
+                "zwischenstand": zs[i]
+            }
+            if data.solotyp == "yes":
+                roundstate["solo"] = data.user_id
+            roundstate["punkte"] = abs(data.punkte)
+            roundstate["spielerArray"].append(player_state)
+        gamestate["runden"].append(roundstate)
+
+    return gamestate

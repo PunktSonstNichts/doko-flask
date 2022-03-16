@@ -28,8 +28,10 @@ def user_already_exist(username):
 
 
 def password_check(name, password):
-
-    for user in User.query.all():
-        if name == user.username and bcrypt.checkpw(password.encode('UTF-8'), user.password.encode('UTF-8')):
+    print(name)
+    print(password)
+    player= User.query.filter_by(username=name).first()
+    if player:
+        if bcrypt.checkpw(password.encode('UTF-8'), player.password.encode('UTF-8')):
             return True
     return False

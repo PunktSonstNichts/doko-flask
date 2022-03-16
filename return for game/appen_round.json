@@ -1,22 +1,22 @@
 {
     "spielerArray": [
         {
-            "id": "40d85dd5-379a-4af0-a493-95e21ed825f5",
+            "id": 1,
             "partei": "Re",
             "punkte": 18
         },
         {
-            "id": "d18b283e-d939-4e49-ad29-92a6ec6f56e3",
+            "id": 2,
+            "partei": "Kontra",
+            "punkte": -6
+        },
+        {   
+            "id": 3,
             "partei": "Kontra",
             "punkte": -6
         },
         {
-            "id": "4d7ea95d-0f12-4733-9251-3a249427a7dd",
-            "partei": "Kontra",
-            "punkte": -6
-        },
-        {
-            "id": "4826d00c-c4d8-4a27-b441-3b9b53b99b91",
+            "id": 4,
             "partei": "Kontra",
             "punkte": -6
         }
