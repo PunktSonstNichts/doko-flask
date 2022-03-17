@@ -16,15 +16,17 @@ def check_name(name):
 
 
 def add_new_player(added_from, new_user):
+    
 
     if user_already_exist(new_user):
         return "user already exists"
     test = User(username=new_user, added_from=added_from)
+         
 
     db.session.add(test)
     db.session.commit()
 
-    return "player is now in database"
+    return {"username": test.username, "user_id": test.user_id, "added_from": added_from}
 
 
 def user_already_exist(username):
