@@ -1,12 +1,6 @@
-from datetime import datetime
-from flask import Flask, render_template, url_for, flash, redirect, jsonify, request
+from flask import Flask
 from flask_cors import CORS
-from flask_api import status
-from flask_jwt_extended import create_access_token
-from flask_jwt_extended import get_jwt_identity
-from flask_jwt_extended import jwt_required, get_jwt
 from flask_jwt_extended import JWTManager
-from flask_jwt_extended import decode_token
 
 from flask_sqlalchemy import SQLAlchemy
 
