@@ -1,7 +1,6 @@
-from doppelkopf.database_constructors import Game, Rounds, RoundsXPlayer, User
-from doppelkopf import db
-import json
 import matplotlib.pyplot as plt
+
+from doppelkopf.database_constructors import Game, Rounds, RoundsXPlayer, User
 
 
 def chart(game_id):
@@ -28,15 +27,20 @@ def chart(game_id):
 
     for n, user_points in enumerate(points):
         for i in range(1, len(user_points)):
-            user_points[i] = user_points[i]+user_points[i-1]
+            user_points[i] = user_points[i] + user_points[i - 1]
 
+        print(x)
+        print(user_points)
         plt.plot(x, user_points, label=names[n])
 
-    print(points)
+    print(user_points)
     plt.xlabel('Runden')
     plt.ylabel('Punkte')
+    # set y-scale to only use integers
+    # ax = plt.figure().gca()
+    # ax.xaxis.get_major_locator().set_params(integer=True)
 
-    plt.title("Simple Plot")
+    plt.title("Doko Punkteübersicht vom Spiel am " + game.timestamp)
 
     plt.legend()
 
