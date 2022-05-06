@@ -1,14 +1,17 @@
+from pprint import pprint
+
 from doppelkopf.database_constructors import Game, Rounds, RoundsXPlayer, User
-import json
 
 
 def game_state(game_id):
     game = Game.query.filter_by(game_id=game_id).first()
-
+    pprint(vars(game))
     gamestate = {
         "_id": game_id,
         "runden": [],
         "spieler": [],
+        "remainingBock": [],
+        "gesperrt": game.locked,
         "timestamp": game.timestamp}
 
     # this section is for player related information
@@ -43,6 +46,7 @@ def game_state(game_id):
 
         roundstate = {
             "punkte": 0,
+            "bock": 0,
             "solo": None,
             "spielerArray": []
         }

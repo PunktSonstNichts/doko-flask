@@ -1,6 +1,5 @@
-from flask_sqlalchemy import SQLAlchemy
-from datetime import datetime
 from sqlalchemy import ForeignKey
+
 from doppelkopf import db
 
 
@@ -32,6 +31,9 @@ class Game(db.Model):
     )
     player5_id = db.Column(
         "player5_id", db.Integer, ForeignKey("user.user_id"), nullable=True
+    )
+    locked = db.Column(
+        "locked", db.String(100), nullable=True
     )
 
 
