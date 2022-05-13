@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 from doppelkopf.database_constructors import Game, Rounds, RoundsXPlayer, User
 
 
-def chart(game_id):
+def chart(game_id, request_player_id=20):
     game = Game.query.filter_by(game_id=game_id).first()
 
     players = [game.player1_id, game.player2_id,
@@ -21,9 +21,13 @@ def chart(game_id):
         points.append([])
     x = []
     for n, round in enumerate(Rounds.query.filter_by(game_id=game_id).all()):
-        for i, data in enumerate(RoundsXPlayer.query.filter_by(round_id=round.round_id).all()):
-            points[i].append(data.punkte)
-        x.append(n+1)
+        for i, playerId in enumerate(players):
+            eintrag = RoundsXPlayer.query.filter_by(round_id=round.round_id, user_id=playerId).first()
+            if (eintrag):
+                points[i].append(eintrag.punkte)
+            else:
+                points[i].append(0)
+        x.append(n + 1)
 
     for n, user_points in enumerate(points):
         for i in range(1, len(user_points)):
@@ -31,7 +35,11 @@ def chart(game_id):
 
         print(x)
         print(user_points)
-        plt.plot(x, user_points, label=names[n])
+        if players[n] == request_player_id:
+            width = 4
+        else:
+            width = 1
+        plt.plot(x, user_points, label=names[n], linewidth=width)
 
     print(user_points)
     plt.xlabel('Runden')
@@ -41,7 +49,8 @@ def chart(game_id):
     # ax.xaxis.get_major_locator().set_params(integer=True)
 
     plt.title("Doko Punkteübersicht vom Spiel am " + game.timestamp)
-
+    plt.grid()
     plt.legend()
 
+    plt.savefig("results.png")
     plt.show()
