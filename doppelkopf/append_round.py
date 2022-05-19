@@ -42,5 +42,6 @@ def lock(gameId):
         if game.game_id == int(gameId):
             now = datetime.now()
             game.locked = now.strftime("%d/%m/%Y %H:%M:%S")
+            db.session.commit()
             return True
     return False

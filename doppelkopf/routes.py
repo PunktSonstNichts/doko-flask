@@ -73,26 +73,22 @@ def get_token():
     # request body contains user_id
     # todo store token in passworld field of corresponding user (see request body)
     # and make sure created field of user is null
-    # return token (jwt or something similar?) in payload
-    return "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwidG9rZW4iOiIxMjMzMjEiLCJ1c2VybmFtZSI6IlRpbGwiLCJpYXQiOjE1MTYyMzkwMjJ9.lZyhVS01TiWIRY5t18XOuAC0MlKBISJutq40mIsrVxs"
+    # return token (jwt or something similar?) in payload: make sure it's URL-valid!
+    return "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
 
 
 @app.route('/get_token_info/<token>', methods=["GET"])
 def get_token_info(token):
-    print(request.json)
-    print(decode_token(token))
-    added_from = get_jwt_identity()
-    # todo nothing
-    # i really dont know if we need this method as the frontend could just decode the jwt
-    # only becomes necessary if we switch to a token which doesn't store "cleartext" information
-    return ""
+    print(token)
+    # todo get information of user like the name to welcome him/her/* on the platform
+    return player.random_user()
 
 
 @app.route('/create_user/<token>', methods=["POST"])
 def create_user(token):
     print(request.json)
     print(token)
-    added_from = get_jwt_identity()
+    # added_from = get_jwt_identity()
     # todo request body contains user_id, token, e-mail and password
     # todo 1. check if token matches the stored token
     # todo 2. set user created to current timestamp

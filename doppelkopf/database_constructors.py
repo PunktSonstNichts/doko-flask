@@ -1,3 +1,5 @@
+import json
+
 from sqlalchemy import ForeignKey
 
 from doppelkopf import db
@@ -12,6 +14,10 @@ class User(db.Model):
 
     def __repr__(self):
         return '<User %r>' % self.username
+
+    def toJSON(self):
+        return json.dumps(self, default=lambda o: o.__dict__,
+                          sort_keys=True, indent=4)
 
 
 class Game(db.Model):
@@ -44,7 +50,6 @@ class Rounds(db.Model):
 
 
 class RoundsXPlayer(db.Model):
-
     id = db.Column("id", db.Integer, primary_key=True)
     round_id = db.Column("round_id", db.Integer, ForeignKey("rounds.round_id"))
     user_id = db.Column("user_id", db.Integer, ForeignKey("user.user_id"))

@@ -1,11 +1,16 @@
-import datetime
-import uuid
-from doppelkopf.database_constructors import User
+import random
+
 from doppelkopf import db
+from doppelkopf.database_constructors import User
+
+
+# dev purpose only!
+def random_user():
+    user = random.choice(User.query.all())
+    return {"username": user.username, "user_id": user.user_id, "added_from": user.added_from, "email": user.email}
 
 
 def check_name(name):
-
     player_list = []
     for user in User.query.all():
         if user.username.startswith(name):

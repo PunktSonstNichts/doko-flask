@@ -1,3 +1,5 @@
+from pprint import pprint
+
 import matplotlib.pyplot as plt
 
 from doppelkopf.database_constructors import Game, Rounds, RoundsXPlayer, User
@@ -14,6 +16,7 @@ def chart(game_id, request_player_id=20):
     names = []
     for i, player in enumerate(players):
         pl = User.query.filter_by(user_id=player).first()
+        pprint(vars(pl))
         names.append(pl.username)
     print(names)
     points = []
