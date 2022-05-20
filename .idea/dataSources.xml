@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
+    <data-source source="LOCAL" name="doko driver - doko.db" uuid="bb0745b4-e53d-4181-9ca1-d70720f77c56">
+      <driver-ref>835c0dc9-3129-4123-83df-1e01eac97859</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
+      <jdbc-url>jdbc:sqlite:$PROJECT_DIR$/doppelkopf/doko.db</jdbc-url>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
+    <data-source source="LOCAL" name="doko driver - site_blabla.db" uuid="69dea858-08dc-4e29-a011-2b37b4b9d70e">
+      <driver-ref>835c0dc9-3129-4123-83df-1e01eac97859</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
+      <jdbc-url>jdbc:sqlite:$PROJECT_DIR$/doppelkopf/site_blabla.db</jdbc-url>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
+  </component>
+</project>

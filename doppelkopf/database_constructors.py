@@ -59,3 +59,7 @@ class RoundsXPlayer(db.Model):
     schweine = db.Column("schweine", db.String, nullable=True)
     armut = db.Column("armut", db.Integer, nullable=True)
     solotyp = db.Column("solotyp", db.String, nullable=True)
+
+
+# only creates db if not existing
+db.create_all()

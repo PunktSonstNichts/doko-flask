@@ -13,7 +13,10 @@ COPY requirements.txt /app/requirements.txt
 RUN pip3 install -r requirements.txt
 
 # Copy the files
-COPY . .
+COPY . /app
 
+
+EXPOSE 5000
+ENV FLASK_APP run.py
 # Executable commands
 CMD [ "python3", "-m" , "flask", "run", "--host=0.0.0.0"]
