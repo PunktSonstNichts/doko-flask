@@ -1,10 +1,9 @@
-import datetime
-
 from flask import jsonify, request
 from flask_api import status
-from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required, decode_token
+from flask_jwt_extended import get_jwt_identity, jwt_required
 
 from doppelkopf import create_game, jwt_login, player, app, append_round, game_state
+from doppelkopf.jwt_login import create_token_for_player, find_player_from_token, upgrade_player_to_user
 
 
 @app.route("/login", methods=["POST"])
@@ -12,15 +11,7 @@ def login():
     username = request.json.get("username", None)
     password = request.json.get("password", None)
 
-    # überprüfen ob Passwort korrekt ist
-    if not jwt_login.password_check(username, password):
-        return jsonify({"msg": "Bad username or password"}), 401
-
-    # bei erfolgreicehr anmeldung Tokenübermittelung an Client
-    access_token = create_access_token(
-        identity=username, expires_delta=datetime.timedelta(hours=24))
-    print(decode_token(access_token, allow_expired=False))
-    return jsonify(access_token=access_token)
+    return jwt_login.login_user(username, password)
 
 @app.route('/new', methods=["POST"])
 @jwt_required()
@@ -53,7 +44,7 @@ def lockGame(gameId):
 @app.route('/namelist/<name>', methods=["GET"])
 @jwt_required()
 def name_list(name):
-    return ({"player": player.check_name(name)})
+    return {"player": player.check_name(name, request.args.get("userHasAccount"))}
 
 
 @app.route('/new_player', methods=["POST"])
@@ -67,26 +58,27 @@ def new_player():
 @app.route('/get_token', methods=["GET"])
 @jwt_required()
 def get_token():
-    print(request)
+    if request.args.get("user_id") is None:
+        return "user_id is missing", status.HTTP_400_BAD_REQUEST
+    print(request.args.get("user_id"))
     added_from = get_jwt_identity()
+    token = create_token_for_player(request.args.get("user_id"), added_from)
     # todo generate random and somewhat secure token
     # request body contains user_id
     # todo store token in passworld field of corresponding user (see request body)
     # and make sure created field of user is null
     # return token (jwt or something similar?) in payload: make sure it's URL-valid!
-    return "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
+    return token
 
 
 @app.route('/get_token_info/<token>', methods=["GET"])
 def get_token_info(token):
-    print(token)
-    # todo get information of user like the name to welcome him/her/* on the platform
-    return player.random_user()
+    return find_player_from_token(token)
 
 
 @app.route('/create_user/<token>', methods=["POST"])
 def create_user(token):
-    print(request.json)
+    print(request.json["email"])
     print(token)
     # added_from = get_jwt_identity()
     # todo request body contains user_id, token, e-mail and password
@@ -94,7 +86,7 @@ def create_user(token):
     # todo 2. set user created to current timestamp
     # todo 3. encrypt user password and store it and e-mail in db
     # todo maybe directly return jwt token so user is already locked in
-    return ""
+    return upgrade_player_to_user(request.json["user_id"], token, request.json["password"], request.json["email"])
 
 
 @app.route("/")

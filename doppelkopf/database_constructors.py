@@ -11,6 +11,7 @@ class User(db.Model):
     password = db.Column("password", db.String(100), nullable=True)
     email = db.Column("email", db.String(100), nullable=True)
     added_from = db.Column("added_from", db.Integer, ForeignKey("user.user_id"), nullable=True)
+    last_login = db.Column("last_login", db.DATETIME, nullable=True)
 
     def __repr__(self):
         return '<User %r>' % self.username

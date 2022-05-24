@@ -10,24 +10,21 @@ def random_user():
     return {"username": user.username, "user_id": user.user_id, "added_from": user.added_from, "email": user.email}
 
 
-def check_name(name, namesWithoutAccount=False):
+def check_name(name, user_has_account=False):
     player_list = []
     for user in User.query.all():
         if user.username.casefold().startswith(name.casefold()):
-            if not (namesWithoutAccount and user.password):
+            if not (user_has_account and user.password):
                 player_list.append(
                     {"username": user.username, "user_id": user.user_id})
 
     return player_list
 
 
-def add_new_player(added_from, new_user):
-    
-
-    if user_already_exist(new_user):
+def add_new_player(added_from, new_player):
+    if user_already_exist(new_player):
         return "user already exists"
-    test = User(username=new_user, added_from=added_from)
-         
+    test = User(username=new_player, added_from=added_from)
 
     db.session.add(test)
     db.session.commit()
