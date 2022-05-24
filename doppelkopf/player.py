@@ -10,12 +10,13 @@ def random_user():
     return {"username": user.username, "user_id": user.user_id, "added_from": user.added_from, "email": user.email}
 
 
-def check_name(name):
+def check_name(name, namesWithoutAccount=False):
     player_list = []
     for user in User.query.all():
-        if user.username.startswith(name):
-            player_list.append(
-                {"username": user.username, "user_id": user.user_id})
+        if user.username.casefold().startswith(name.casefold()):
+            if not (namesWithoutAccount and user.password):
+                player_list.append(
+                    {"username": user.username, "user_id": user.user_id})
 
     return player_list
 
