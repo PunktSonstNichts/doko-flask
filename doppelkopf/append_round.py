@@ -16,7 +16,7 @@ def append(json, gameId):
 
             timestamp = now.strftime("%d/%m/%Y %H:%M:%S")
 
-            round = Rounds(game_id=gameId, timestamp=timestamp)
+            round = Rounds(game_id=gameId, timestamp=timestamp, bock=json["bock"])
             db.session.add(round)
             db.session.commit()
             for user in json["spielerArray"]:
@@ -27,8 +27,14 @@ def append(json, gameId):
                     solo = "no"
 
                 playerxround = RoundsXPlayer(
-                    round_id=round.round_id, user_id=user["id"], punkte=user["punkte"], partei=user["partei"],
-                    solotyp=solo, schweine=json["schweine"], hochzeit=json["hochzeit"], armut=json["armut"])
+                    round_id=round.round_id,
+                    user_id=user["id"],
+                    punkte=user["punkte"],
+                    partei=user["partei"],
+                    solotyp=solo,
+                    schweine=user["id"] == json["schweine"],
+                    hochzeit=user["id"] == json["hochzeit"],
+                    armut=user["id"] == json["armut"])
 
                 db.session.add(playerxround)
                 db.session.commit()

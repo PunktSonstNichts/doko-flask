@@ -10,7 +10,7 @@ class User(db.Model):
     username = db.Column("username", db.String(100), nullable=False)
     password = db.Column("password", db.String(100), nullable=True)
     email = db.Column("email", db.String(100), nullable=True)
-    added_from = db.Column("added_from", db.Integer, nullable=True)
+    added_from = db.Column("added_from", db.Integer, ForeignKey("user.user_id"), nullable=True)
 
     def __repr__(self):
         return '<User %r>' % self.username
@@ -47,6 +47,7 @@ class Rounds(db.Model):
     game_id = db.Column("game_id", db.Integer, ForeignKey("game.game_id"))
     round_id = db.Column("round_id", db.Integer, primary_key=True)
     timestamp = db.Column("timestamp", db.String(100), nullable=False)
+    bock = db.Column("bock", db.BOOLEAN, nullable=False, default=False)
 
 
 class RoundsXPlayer(db.Model):
