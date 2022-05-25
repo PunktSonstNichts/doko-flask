@@ -1,4 +1,5 @@
 # pip freeze > requirements.txt # to create requirements.txt file
+# todo requirements.txt: delete every jwt dependencie except Flask-JWT-Extended
 
 # Base python package
 FROM python:3.8-slim-buster
