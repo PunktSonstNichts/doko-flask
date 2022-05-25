@@ -78,7 +78,6 @@ def get_token_info(token):
 
 @app.route('/create_user/<token>', methods=["POST"])
 def create_user(token):
-    print(request.json["email"])
     print(token)
     # added_from = get_jwt_identity()
     # todo request body contains user_id, token, e-mail and password
