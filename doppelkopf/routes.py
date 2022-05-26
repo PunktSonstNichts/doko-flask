@@ -44,7 +44,8 @@ def lockGame(gameId):
 @app.route('/namelist/<name>', methods=["GET"])
 @jwt_required()
 def name_list(name):
-    return {"player": player.check_name(name, request.args.get("userHasAccount"))}
+    userHasAccount = request.args.get("userHasAccount", type=lambda v: v.lower() == 'true', default=False)
+    return {"player": player.check_name(name, userHasAccount)}
 
 
 @app.route('/new_player', methods=["POST"])
