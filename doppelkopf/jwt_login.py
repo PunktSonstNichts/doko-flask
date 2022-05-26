@@ -29,9 +29,12 @@ def upgrade_player_to_user(user_id, token, password, email):
 
 
 def create_token_for_player(user_id, added_from):
-    token = uuid.uuid4().__str__()
 
     player = User.query.filter_by(user_id=user_id).first()
+    if player.password:
+        return "nanana, player already has an account", 400
+
+    token = uuid.uuid4().__str__()
     player.added_from = added_from
     player.password = "token:" + token
     db.session.commit()
