@@ -86,9 +86,11 @@ def create_user(token):
     # todo 2. set user created to current timestamp
     # todo 3. encrypt user password and store it and e-mail in db
     # todo maybe directly return jwt token so user is already locked in
-    return upgrade_player_to_user(request.json["user_id"], token, request.json["password"], request.json["email"])
+    return upgrade_player_to_user(request.json["user_id"], token, request.json["password"],
+                                  request.json.get("email", None))
 
 
 @app.route("/")
+@jwt_required()
 def hello_world():
     return "<p>Hello, World!</p>"
