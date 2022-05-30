@@ -2,7 +2,7 @@ from flask import jsonify, request
 from flask_api import status
 from flask_jwt_extended import get_jwt_identity, jwt_required
 
-from doppelkopf import create_game, jwt_login, player, app, append_round, game_state
+from doppelkopf import create_game, jwt_login, player, app, append_round, game_state, delete_last_round
 from doppelkopf.jwt_login import create_token_for_player, find_player_from_token, upgrade_player_to_user
 
 
@@ -21,13 +21,15 @@ def create_games():
     return jsonify(create_game.create(players))
 
 
-@app.route('/game/<gameId>', methods=["GET", "POST"])
+@app.route('/game/<gameId>', methods=["GET", "POST", "DELETE"])
 @jwt_required()
 def game(gameId):
     if request.method == 'POST':
         content = request.json
         if not append_round.append(content, gameId):
             return "gameID not found", status.HTTP_400_BAD_REQUEST
+    elif request.method == 'DELETE':
+        delete_last_round.delete(gameId)
 
     return jsonify(game_state.game_state(gameId))
 
@@ -86,7 +88,9 @@ def create_user(token):
     # todo 2. set user created to current timestamp
     # todo 3. encrypt user password and store it and e-mail in db
     # todo maybe directly return jwt token so user is already locked in
-    return upgrade_player_to_user(request.json["user_id"], token, request.json["password"],
+    return upgrade_player_to_user(request.json["user_id"],
+                                  token,
+                                  request.json["password"],
                                   request.json.get("email", None))
 
 
