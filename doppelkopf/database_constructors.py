@@ -65,3 +65,5 @@ class RoundsXPlayer(db.Model):
 
 # only creates db if not existing
 db.create_all()
+
+# todo add admin user if user table is empty
