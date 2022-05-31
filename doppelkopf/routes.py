@@ -2,7 +2,7 @@ from flask import jsonify, request, send_file
 from flask_api import status
 from flask_jwt_extended import get_jwt_identity, jwt_required
 
-from doppelkopf import create_game, jwt_login, player, app, append_round, game_state, delete_last_round
+from doppelkopf import create_game, endergebniss ,jwt_login, player, app, append_round, game_state, delete_last_round
 from doppelkopf.jwt_login import create_token_for_player, find_player_from_token, upgrade_player_to_user
 
 
@@ -39,8 +39,9 @@ def game(gameId):
 def lockGame(gameId):
     if not append_round.lock(gameId):
         return "gameID not found", status.HTTP_400_BAD_REQUEST
-
+    endergebniss.chart(gameId)
     return jsonify(game_state.game_state(gameId))
+
 
 
 @app.route('/namelist/<name>', methods=["GET"])
@@ -99,7 +100,7 @@ def create_user(token):
 def downloadFile ():
    
     #For windows you need to use drive name [ex: F:/Example.pdf]
-    path = "doppelkopf\doko.db"
+    path = "doko.db"
     
     return send_file(path, as_attachment=True)
 

@@ -1,4 +1,5 @@
 from doppelkopf.database_constructors import Game, Rounds, RoundsXPlayer, User
+import collections
 
 
 def game_state(game_id):
@@ -16,7 +17,7 @@ def game_state(game_id):
     # this section is for player related information
     players = [game.player1_id, game.player2_id,
                game.player3_id, game.player4_id]
-
+    
     aus = 6
     zs = [0, 0, 0, 0]
     bockIndex = []
@@ -24,31 +25,13 @@ def game_state(game_id):
         players.append(game.player5_id)
         aus = len(Rounds.query.filter_by(game_id=game_id).all()) % len(players)
         zs.append(0)
+        
         # bock.append(0) #here was the 500 error msg
     remBock = [0] * len(players)
     raus = (len(Rounds.query.filter_by(game_id=game_id).all()) + 1) % len(players)
 
-    for i, player in enumerate(players):
-        pl = User.query.filter_by(user_id=player).first()
-        name = pl.username
-
-        if i == raus:
-            outi = True
-        else:
-            outi = False
-        if i == aus and aus != 6:
-            auss = True
-        else:
-            auss = False
-        spielerer = {
-            "aussetzen": auss,
-            "id": player,
-            "kommt_raus": outi,
-            "name": name
-        }
-
-        gamestate["spieler"].append(spielerer)
-
+    
+    
     for n, round in enumerate(Rounds.query.filter_by(game_id=game_id).all()):
         bock = remBock[0]
 
@@ -92,6 +75,7 @@ def game_state(game_id):
                 "punkte": data.punkte,
                 "zwischenstand": zs[i]
             }
+            
             if data.solotyp == "yes":
                 roundstate["solo"] = data.user_id
             roundstate["punkte"] = abs(data.punkte)
@@ -101,5 +85,43 @@ def game_state(game_id):
     remBock = [i for i in remBock if i != 0]
     print(remBock)
     gamestate["remainingBock"] = remBock
+
+    posi={}
+    for peop in gamestate["runden"][-1]["spielerArray"]:
+        print(peop)
+        posi[peop['zwischenstand']]=peop['id']
+  
+    poss= []
+    print()
+    sort=sorted(posi.keys())
+    sort.sort(reverse=True)
+    for sco in sort:
+        poss.append(posi[sco])
+    
+    
+    for i, player in enumerate(players):
+        pl = User.query.filter_by(user_id=player).first()
+        name = pl.username
+
+        if i == raus:
+            outi = True
+        else:
+            outi = False
+        if i == aus and aus != 6:
+            auss = True
+        else:
+            auss = False
+        spielerer = {
+            "aussetzen": auss,
+            "id": player,
+            "kommt_raus": outi,
+            "name": name,
+            "position":poss.index(player)+1
+        }
+
+        gamestate["spieler"].append(spielerer)
+
+    
+
 
     return gamestate
