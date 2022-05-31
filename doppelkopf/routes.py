@@ -1,8 +1,11 @@
-from flask import jsonify, request, send_file
+import os
+
+from flask import jsonify, request, send_file, send_from_directory
 from flask_api import status
 from flask_jwt_extended import get_jwt_identity, jwt_required
 
-from doppelkopf import create_game, endergebniss ,jwt_login, player, app, append_round, game_state, delete_last_round
+from doppelkopf import create_game, endergebniss, jwt_login, player, app, append_round, game_state, delete_last_round, \
+    player_stats
 from doppelkopf.jwt_login import create_token_for_player, find_player_from_token, upgrade_player_to_user
 
 
@@ -41,7 +44,6 @@ def lockGame(gameId):
         return "gameID not found", status.HTTP_400_BAD_REQUEST
     endergebniss.chart(gameId)
     return jsonify(game_state.game_state(gameId))
-
 
 
 @app.route('/namelist/<name>', methods=["GET"])
@@ -95,19 +97,33 @@ def create_user(token):
                                   request.json.get("email", None))
 
 
-@app.route('/download')
+@app.route('/result_plot/<path>')
+def send_report(path):
+    root_dir = os.path.dirname(os.getcwd())
+    return send_from_directory(os.path.join(root_dir, 'doko-flask', 'Graphs'), path)
+
+
+@app.route('/get_player_stats', methods=["GET"])
 @jwt_required()
-def downloadFile ():
-   
-    #For windows you need to use drive name [ex: F:/Example.pdf]
+def get_player_stats():
+    print(get_jwt_identity())
+    return player_stats(1)
+
+
+@app.route('/download')
+# @jwt_required()
+def downloadFile():
+    # For windows you need to use drive name [ex: F:/Example.pdf]
     path = "doko.db"
-    
     return send_file(path, as_attachment=True)
 
+
+@app.route("/hello")
+def hello_world():
+    return "<p>Hello, World!</p>"
 
 
 @app.route("/")
 @jwt_required()
-def hello_world():
+def jwt_works():
     return "<p>Hello, World!</p>"
-
