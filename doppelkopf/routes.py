@@ -94,9 +94,19 @@ def create_user(token):
                                   request.json.get("email", None))
 
 
+@app.route('/download')
+@jwt_required()
+def downloadFile ():
+   
+    #For windows you need to use drive name [ex: F:/Example.pdf]
+    path = "doppelkopf\doko.db"
+    
+    return send_file(path, as_attachment=True)
+
+
+
 @app.route("/")
 @jwt_required()
 def hello_world():
     return "<p>Hello, World!</p>"
 
-    #test
