@@ -100,7 +100,7 @@ def create_user(token):
 @app.route('/result_plot/<path>')
 def send_report(path):
     root_dir = os.path.dirname(os.getcwd())
-    return send_from_directory(os.path.join(root_dir, 'doko-flask', 'Graphs'), path)
+    return send_from_directory(os.path.join(root_dir, 'Graphs'), path)
 
 
 @app.route('/get_player_stats', methods=["GET"])
