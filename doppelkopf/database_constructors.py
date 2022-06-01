@@ -1,5 +1,6 @@
 import json
 
+import bcrypt
 from sqlalchemy import ForeignKey
 
 from doppelkopf import db
@@ -66,4 +67,9 @@ class RoundsXPlayer(db.Model):
 # only creates db if not existing
 db.create_all()
 
-# todo add admin user if user table is empty
+# create admin user if user table is empty
+if len(User.query.all()) == 0:
+    hashed = bcrypt.hashpw("1234".encode('UTF-8'), bcrypt.gensalt()).decode("utf-8")
+    test = User(username="admin", added_from=None, password=hashed)
+    db.session.add(test)
+    db.session.commit()
