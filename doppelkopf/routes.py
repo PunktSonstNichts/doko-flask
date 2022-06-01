@@ -102,7 +102,7 @@ def send_report(path):
     root_dir = os.path.dirname(os.getcwd())
     print(root_dir)
     print(send_from_directory(os.path.join(root_dir, 'doko-flask', 'Graphs'), path))
-    return send_from_directory(os.path.join(root_dir, 'Graphs'), path)
+    return root_dir  # send_from_directory(os.path.join(root_dir, 'doko-flask', 'Graphs'), path)
 
 
 @app.route('/get_player_stats', methods=["GET"])
