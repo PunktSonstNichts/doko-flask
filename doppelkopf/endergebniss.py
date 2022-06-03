@@ -54,6 +54,5 @@ def chart(game_id, request_player_id=20):
     plt.title("Doko Punkteübersicht vom Spiel am " + game.timestamp)
     plt.grid()
     plt.legend()
-    name = "Graphs/" + str(game_id) + ".png"
-    plt.savefig(name)
-    plt.show()
+
+    return plt

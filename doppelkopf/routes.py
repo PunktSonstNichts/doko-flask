@@ -1,6 +1,7 @@
-import os
+import base64
+import io
 
-from flask import jsonify, request, send_file, send_from_directory
+from flask import jsonify, request, send_file
 from flask_api import status
 from flask_jwt_extended import get_jwt_identity, jwt_required
 
@@ -42,7 +43,6 @@ def game(gameId):
 def lockGame(gameId):
     if not append_round.lock(gameId):
         return "gameID not found", status.HTTP_400_BAD_REQUEST
-    endergebniss.chart(gameId)
     return jsonify(game_state.game_state(gameId))
 
 
@@ -97,12 +97,15 @@ def create_user(token):
                                   request.json.get("email", None))
 
 
-@app.route('/result_plot/<path>')
-def send_report(path):
-    root_dir = os.path.dirname(os.getcwd())
-    print(root_dir)
-    print(send_from_directory(os.path.join(root_dir, 'doko-flask', 'Graphs'), path))
-    return root_dir  # send_from_directory(os.path.join(root_dir, 'doko-flask', 'Graphs'), path)
+@app.route('/result_plot/<game_id>')
+def send_report(game_id):
+    plt = endergebniss.chart(game_id)
+    buf = io.BytesIO()
+    plt.savefig(buf, bbox_inches='tight', dpi=300, format="png")
+    plt.close()
+    # Embed the result in the html output.
+    data = base64.b64encode(buf.getbuffer()).decode("ascii")
+    return "data:image/png;base64," + data
 
 
 @app.route('/get_player_stats', methods=["GET"])
