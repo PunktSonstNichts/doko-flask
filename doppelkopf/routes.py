@@ -21,13 +21,12 @@ def login():
 @jwt_required()
 def create_games():
     players = request.json
-    create_game.create(players)
     return jsonify(create_game.create(players))
 
 
 @app.route('/game/<gameId>', methods=["GET", "POST", "DELETE"])
 @jwt_required()
-def game(gameId):
+def game_route(gameId):
     if request.method == 'POST':
         content = request.json
         if not append_round.append(content, gameId):
