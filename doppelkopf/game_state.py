@@ -34,19 +34,18 @@ def game_state(game_id):
     
     for n, round in enumerate(Rounds.query.filter_by(game_id=game_id).all()):
         bock = remBock[0]
-
         remBock.pop(0)
         remBock.append(0)
-        print(remBock)
-        ctr = len(players)
+        
+        bock_counter = len(players)
         if round.bock == 1:
             for ind, el in enumerate(remBock):
-                if ctr == 0:
+                if bock_counter == 0:
                     break
                 if el < MAXBOCK:
-                    ctr -= 1
+                    bock_counter -= 1
                     remBock[ind] += 1
-            for i in range(ctr):
+            for i in range(bock_counter):
                 remBock.append(1)
 
         if round.bock:
@@ -62,14 +61,14 @@ def game_state(game_id):
             "spielerArray": [],
             "bock": bock
         }
-        zs_list=[]
+        zs_set=[]
         for i, data in enumerate(RoundsXPlayer.query.filter_by(round_id=round.round_id).all()):
 
             if i >= aussetzen:
                 i += 1
 
             zs[i] += data.punkte
-            zs_list.append(zs[i])
+            zs_set.append(zs[i])
             player_state = {
                 "id": data.user_id,
                 "partei": data.partei,
@@ -84,16 +83,21 @@ def game_state(game_id):
         gamestate["runden"].append(roundstate)
 
     remBock = [i for i in remBock if i != 0]
-    print(remBock)
+    
     gamestate["remainingBock"] = remBock
+    
+    
+        
 
-    zs_list= list(set(zs))
-    zs_list.sort(reverse=True)
+    zs_set= list(set(zs))
+    zs_set.sort(reverse=True)
     
     
     for i, player in enumerate(players):
+        
         pl = User.query.filter_by(user_id=player).first()
         name = pl.username
+        
 
         if i == raus:
             outi = True
@@ -103,17 +107,19 @@ def game_state(game_id):
             auss = True
         else:
             auss = False
-        spielerer = {
+        spieler = {
             "aussetzen": auss,
             "id": player,
             "kommt_raus": outi,
             "name": name
         }
-        spielerer["position"]=0
-        if len(Rounds.query.filter_by(game_id=game_id).all())>0:
-            spielerer["position"]=zs_list.index(gamestate["runden"][-1]["spielerArray"][i]["zwischenstand"])+1
+        spieler["position"]=0
 
-        gamestate["spieler"].append(spielerer)
+        
+        if len(Rounds.query.filter_by(game_id=game_id).all())>0:
+            spieler["position"]=zs_set.index(zs[i])+1
+
+        gamestate["spieler"].append(spieler)
 
     
 
