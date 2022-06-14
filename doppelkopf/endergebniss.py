@@ -1,5 +1,3 @@
-from pprint import pprint
-
 import matplotlib.pyplot as plt
 
 from doppelkopf.database_constructors import Game, Rounds, RoundsXPlayer, User
@@ -13,12 +11,12 @@ def chart(game_id, request_player_id=20):
 
     if game.player5_id != None:
         players.append(game.player5_id)
+
     names = []
     for i, player in enumerate(players):
         pl = User.query.filter_by(user_id=player).first()
-        pprint(vars(pl))
         names.append(pl.username)
-    print(names)
+
     points = []
     for i in range(len(names)):
         points.append([])
@@ -30,29 +28,23 @@ def chart(game_id, request_player_id=20):
                 points[i].append(eintrag.punkte)
             else:
                 points[i].append(0)
-        x.append(n + 1)
+        # String for x axis enables only Integers instead of float
+        x += [str(1 + n)]
 
     for n, user_points in enumerate(points):
         for i in range(1, len(user_points)):
             user_points[i] = user_points[i] + user_points[i - 1]
 
-        print(x)
-        print(user_points)
         if players[n] == request_player_id:
             width = 4
         else:
             width = 1
         plt.plot(x, user_points, label=names[n], linewidth=width)
 
-    print(user_points)
     plt.xlabel('Runden')
     plt.ylabel('Punkte')
-    # set y-scale to only use integers
-    # ax = plt.figure().gca()
-    # ax.xaxis.get_major_locator().set_params(integer=True)
-
     plt.title("Doko Punkteübersicht vom Spiel am " + game.timestamp)
-    plt.grid()
+
     plt.legend()
 
     return plt

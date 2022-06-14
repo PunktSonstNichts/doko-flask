@@ -24,7 +24,7 @@ def upgrade_player_to_user(user_id, token, password, email):
         user.email = email
     db.session.commit()
     access_token = create_access_token(
-        identity=user.username, expires_delta=timedelta(hours=24))
+        identity=user.user_id, expires_delta=timedelta(hours=24))
     return jsonify(access_token=access_token)
 
 
@@ -71,12 +71,13 @@ def login_user(username, password):
     if not user:
         return jsonify({"msg": "Bad username or password"}), 401
 
-    # bei erfolgreicehr anmeldung Tokenübermittelung an Client
-    access_token = create_access_token(
-        identity=username, expires_delta=timedelta(hours=24))
-    print(decode_token(access_token, allow_expired=False))
-
     # speichere den letzten login
     user.last_login = func.now()
     db.session.commit()
+
+    # bei erfolgreicehr anmeldung Tokenübermittelung an Client
+    access_token = create_access_token(
+        identity=user.user_id, expires_delta=timedelta(hours=24))
+    print(decode_token(access_token, allow_expired=False))
+
     return jsonify(access_token=access_token)

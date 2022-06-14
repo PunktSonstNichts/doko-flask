@@ -1,10 +1,7 @@
 from doppelkopf.database_constructors import Game, Rounds, RoundsXPlayer, User
-import collections
 
 
 def game_state(game_id):
-    MAXBOCK = 2
-
     game = Game.query.filter_by(game_id=game_id).first()
     gamestate = {
         "_id": game_id,
@@ -12,12 +9,15 @@ def game_state(game_id):
         "spieler": [],
         "remainingBock": [],
         "gesperrt": game.locked,
+        "withoutBock": game.maxBock == 0,
         "timestamp": game.timestamp}
-
     # this section is for player related information
     players = [game.player1_id, game.player2_id,
                game.player3_id, game.player4_id]
-    
+
+    # and this section is for options
+    MAXBOCK = game.maxBock
+
     aus = 6
     zs = [0, 0, 0, 0]
     bockIndex = []
@@ -25,18 +25,16 @@ def game_state(game_id):
         players.append(game.player5_id)
         aus = len(Rounds.query.filter_by(game_id=game_id).all()) % len(players)
         zs.append(0)
-        
-        # bock.append(0) #here was the 500 error msg
-    remBock = [0] * len(players)
-    raus = (len(Rounds.query.filter_by(game_id=game_id).all()) + 1) % len(players)
 
-    
-    
+    remBock = [0] * len(players)
+
+    solo_count = 0
+
     for n, round in enumerate(Rounds.query.filter_by(game_id=game_id).all()):
         bock = remBock[0]
         remBock.pop(0)
         remBock.append(0)
-        
+
         bock_counter = len(players)
         if round.bock == 1:
             for ind, el in enumerate(remBock):
@@ -75,29 +73,30 @@ def game_state(game_id):
                 "punkte": data.punkte,
                 "zwischenstand": zs[i]
             }
-            
+
             if data.solotyp == "yes":
                 roundstate["solo"] = data.user_id
+                # keep track of Solos if they are "eingereit",
+                # meaning if the same person has to shuffle cards again
+                if game.soloKommtRaus:
+                    solo_count = solo_count + 1
+
             roundstate["punkte"] = abs(data.punkte)
             roundstate["spielerArray"].append(player_state)
         gamestate["runden"].append(roundstate)
 
     remBock = [i for i in remBock if i != 0]
-    
-    gamestate["remainingBock"] = remBock
-    
-    
-        
 
-    zs_set= list(set(zs))
+    gamestate["remainingBock"] = remBock
+
+    zs_set = list(set(zs))
     zs_set.sort(reverse=True)
-    
-    
+
+    raus = (len(Rounds.query.filter_by(game_id=game_id).all()) + 1 - solo_count) % len(players)
     for i, player in enumerate(players):
-        
+
         pl = User.query.filter_by(user_id=player).first()
         name = pl.username
-        
 
         if i == raus:
             outi = True
@@ -113,11 +112,13 @@ def game_state(game_id):
             "kommt_raus": outi,
             "name": name
         }
-        spieler["position"]=0
+        spieler["position"] = 0
 
-        
-        if len(Rounds.query.filter_by(game_id=game_id).all())>0:
-            spieler["position"]=zs_set.index(zs[i])+1
+        if len(Rounds.query.filter_by(game_id=game_id).all()) > 0:
+            spieler["position"] = zs_set.index(zs[i]) + 1
+        spielerer = {"aussetzen": auss, "id": player, "kommt_raus": outi, "name": name, "position": 0}
+        if len(Rounds.query.filter_by(game_id=game_id).all()) > 0:
+            spielerer["position"] = zs_list.index(gamestate["runden"][-1]["spielerArray"][i]["zwischenstand"]) + 1
 
         gamestate["spieler"].append(spieler)
 

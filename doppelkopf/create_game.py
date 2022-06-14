@@ -4,7 +4,7 @@ from doppelkopf import db
 from doppelkopf.database_constructors import Game
 
 
-def create(playerArray):
+def create(playerArray, maxBock, soloKommtRaus):
     now = datetime.now()
     dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
 
@@ -17,8 +17,14 @@ def create(playerArray):
     else:
         player5_id = None
 
-    game = Game(timestamp=dt_string, player1_id=player1_id,
-                player2_id=player2_id, player3_id=player3_id, player4_id=player4_id, player5_id=player5_id)
+    game = Game(timestamp=dt_string,
+                player1_id=player1_id,
+                player2_id=player2_id,
+                player3_id=player3_id,
+                player4_id=player4_id,
+                player5_id=player5_id,
+                maxBock=maxBock,
+                soloKommtRaus=soloKommtRaus)
     db.session.add(game)
     db.session.commit()
 

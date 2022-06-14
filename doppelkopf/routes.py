@@ -5,9 +5,9 @@ from flask import jsonify, request, send_file
 from flask_api import status
 from flask_jwt_extended import get_jwt_identity, jwt_required
 
-from doppelkopf import create_game, endergebniss, jwt_login, player, app, append_round, game_state, delete_last_round, \
-    player_stats
+from doppelkopf import create_game, endergebniss, jwt_login, player, app, append_round, game_state, delete_last_round
 from doppelkopf.jwt_login import create_token_for_player, find_player_from_token, upgrade_player_to_user
+from doppelkopf.player_stats import games_for_player
 
 
 @app.route("/login", methods=["POST"])
@@ -17,11 +17,14 @@ def login():
 
     return jwt_login.login_user(username, password)
 
+
 @app.route('/new', methods=["POST"])
 @jwt_required()
 def create_games():
-    players = request.json
-    return jsonify(create_game.create(players))
+    players = request.json["players"]
+    max_bock = request.json["options"]["maxBock"]
+    solo_kommt_raus = request.json["options"]["soloKommtRaus"]
+    return jsonify(create_game.create(players, max_bock, solo_kommt_raus))
 
 
 @app.route('/game/<gameId>', methods=["GET", "POST", "DELETE"])
@@ -48,6 +51,7 @@ def lockGame(gameId):
 @app.route('/namelist/<name>', methods=["GET"])
 @jwt_required()
 def name_list(name):
+    # parse String to Boolean
     userHasAccount = request.args.get("userHasAccount", type=lambda v: v.lower() == 'true', default=False)
     return {"player": player.check_name(name, userHasAccount)}
 
@@ -110,8 +114,7 @@ def send_report(game_id):
 @app.route('/get_player_stats', methods=["GET"])
 @jwt_required()
 def get_player_stats():
-    print(get_jwt_identity())
-    return player_stats(1)
+    return games_for_player(get_jwt_identity())
 
 
 @app.route('/download')

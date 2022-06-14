@@ -43,6 +43,12 @@ class Game(db.Model):
     locked = db.Column(
         "locked", db.String(100), nullable=True
     )
+    maxBock = db.Column(
+        "maxBock", db.Integer
+    )
+    soloKommtRaus = db.Column(
+        "soloKommtRaus", db.BOOLEAN
+    )
 
 
 class Rounds(db.Model):
