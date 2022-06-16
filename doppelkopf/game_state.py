@@ -16,15 +16,15 @@ def game_state(game_id):
                game.player3_id, game.player4_id]
 
     # and this section is for options
-    MAXBOCK = game.maxBock
+    maxbock = game.maxBock
 
     aus = 6
     zs = [0, 0, 0, 0]
     bockIndex = []
-    if game.player5_id != None:
+    if game.player5_id is not None:
         players.append(game.player5_id)
-        aus = len(Rounds.query.filter_by(game_id=game_id).all()) % len(players)
         zs.append(0)
+        aus = len(Rounds.query.filter_by(game_id=game_id).all()) % len(players)
 
     remBock = [0] * len(players)
 
@@ -40,7 +40,7 @@ def game_state(game_id):
             for ind, el in enumerate(remBock):
                 if bock_counter == 0:
                     break
-                if el < MAXBOCK:
+                if el < maxbock:
                     bock_counter -= 1
                     remBock[ind] += 1
             for i in range(bock_counter):
@@ -94,7 +94,7 @@ def game_state(game_id):
 
     raus = (len(Rounds.query.filter_by(game_id=game_id).all()) + 1 - solo_count) % len(players)
     for i, player in enumerate(players):
-
+        print(player)
         pl = User.query.filter_by(user_id=player).first()
         name = pl.username
 
@@ -106,21 +106,15 @@ def game_state(game_id):
             auss = True
         else:
             auss = False
-        spieler = {
-            "aussetzen": auss,
-            "id": player,
-            "kommt_raus": outi,
-            "name": name
-        }
-        spieler["position"] = 0
+        spieler = {"aussetzen": auss, "id": player, "kommt_raus": outi, "name": name, "position": 0}
+
+
+        spielerer = {"aussetzen": auss, "id": player, "kommt_raus": outi, "name": name, "position": 0}
 
         if len(Rounds.query.filter_by(game_id=game_id).all()) > 0:
             spieler["position"] = zs_set.index(zs[i]) + 1
-        spielerer = {"aussetzen": auss, "id": player, "kommt_raus": outi, "name": name, "position": 0}
-        if len(Rounds.query.filter_by(game_id=game_id).all()) > 0:
-            spielerer["position"] = zs_list.index(gamestate["runden"][-1]["spielerArray"][i]["zwischenstand"]) + 1
 
-        gamestate["spieler"].append(spieler)
+        gamestate["spieler"].append(spielerer)
 
     
 
