@@ -83,6 +83,11 @@ def game_state(game_id):
 
             roundstate["punkte"] = abs(data.punkte)
             roundstate["spielerArray"].append(player_state)
+        # calculate spieler position each round for better endresult graph
+        zs_set = list(set(zs))
+        zs_set.sort(reverse=True)
+        for index in range(len(roundstate["spielerArray"])):
+            roundstate["spielerArray"][index]["position"] = zs_set.index(zs[index]) + 1
         gamestate["runden"].append(roundstate)
 
     remBock = [i for i in remBock if i != 0]
